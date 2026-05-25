@@ -16,6 +16,8 @@ COPY . .
 
 RUN composer install --optimize-autoloader --no-interaction
 
+RUN chmod +x start.sh
+
 EXPOSE 80
 
-CMD php artisan optimize:clear && php artisan serve --host=0.0.0.0 --port=$PORT
+CMD ["./start.sh"]
