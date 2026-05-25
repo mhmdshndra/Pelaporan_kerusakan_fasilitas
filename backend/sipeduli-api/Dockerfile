@@ -1,12 +1,9 @@
-FROM php:8.2-cli
+FROM dunglas/frankenphp:php8.2
 
-RUN apt-get update && apt-get install -y \
-    git \
-    unzip \
-    zip \
-    libicu-dev \
-    libzip-dev \
-    && docker-php-ext-install intl zip pdo pdo_mysql
+RUN install-php-extensions \
+    pdo_mysql \
+    intl \
+    zip
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -16,6 +13,6 @@ COPY . .
 
 RUN composer install --optimize-autoloader --no-interaction
 
-EXPOSE 8000
+EXPOSE 80
 
-CMD php -S 0.0.0.0:$PORT -t public
+CMD ["frankenphp", "php-server", "-r", "public/"]
