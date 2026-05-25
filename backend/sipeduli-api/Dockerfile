@@ -1,9 +1,12 @@
-FROM dunglas/frankenphp:php8.2
+FROM php:8.2-cli
 
-RUN install-php-extensions \
-    pdo_mysql \
-    intl \
-    zip
+RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    zip \
+    libicu-dev \
+    libzip-dev \
+    && docker-php-ext-install intl zip pdo pdo_mysql
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -15,4 +18,4 @@ RUN composer install --optimize-autoloader --no-interaction
 
 EXPOSE 80
 
-CMD sh -c "php artisan optimize:clear && frankenphp php-server -r public/ --listen 0.0.0.0:${PORT:-80}"
+CMD ["sh", "-c", "php artisan optimize:clear && php artisan serve --host=0.0.0.0 --port=${PORT:-80}"]
