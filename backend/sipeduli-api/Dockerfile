@@ -14,10 +14,10 @@ WORKDIR /app
 
 COPY . .
 
-RUN composer install --optimize-autoloader --no-interaction
-
 RUN chmod +x start.sh
 
-EXPOSE 80
+RUN composer install --optimize-autoloader --no-interaction
+
+EXPOSE 8080
 
 CMD ["./start.sh"]
