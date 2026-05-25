@@ -15,4 +15,4 @@ RUN composer install --optimize-autoloader --no-interaction
 
 EXPOSE 80
 
-CMD sh -c 'frankenphp php-server -r public/ --listen 0.0.0.0:${PORT:-80}'
+CMD sh -c "php artisan optimize:clear && frankenphp php-server -r public/ --listen 0.0.0.0:${PORT:-80}"
