@@ -1,12 +1,9 @@
-FROM php:8.2-cli
+FROM dunglas/frankenphp:1-php8.2
 
-RUN apt-get update && apt-get install -y \
-    git \
-    unzip \
-    zip \
-    libicu-dev \
-    libzip-dev \
-    && docker-php-ext-install intl zip pdo pdo_mysql
+RUN install-php-extensions \
+    pdo_mysql \
+    intl \
+    zip
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -14,8 +11,8 @@ WORKDIR /app
 
 COPY . .
 
-RUN composer install --optimize-autoloader --no-interaction
+RUN composer install --no-interaction --optimize-autoloader
 
-EXPOSE 8000
+EXPOSE 80
 
-CMD sh -c "php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT"
+CMD sh -c "php artisan migrate --force && php artisan octane:frankenphp --host=0.0.0.0 --port=${PORT:-80}"
